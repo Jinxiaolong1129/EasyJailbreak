@@ -4,7 +4,7 @@ Evaluator class
 """
 from abc import ABC, abstractmethod
 from easyjailbreak.datasets import JailbreakDataset
-
+import logging
 class Evaluator(ABC):
     """
     Abstract base class for implementing evaluation strategies for JailbreakDataset instances.
@@ -25,7 +25,8 @@ class Evaluator(ABC):
         :param ~JailbreakDataset Datasets: The dataset(s) to be evaluated.
         :param **kwargs: Additional keyword arguments that can be passed to the _evaluate method.
         """
-        for instance in Datasets:
+        for i, instance in enumerate(Datasets):
+            logging.info(f"Evaluate | {i+1} / {len(Datasets)}")
             self._evaluate(instance, **kwargs)
 
     @abstractmethod

@@ -3,6 +3,7 @@ This file contains a wrapper for Huggingface models, implementing various method
 It includes the HuggingfaceModel class that extends the functionality of the WhiteBoxModelBase class.
 """
 
+from os import name
 import sys
 from .model_base import WhiteBoxModelBase
 import warnings
@@ -43,6 +44,18 @@ class HuggingfaceModel(WhiteBoxModelBase):
         super().__init__(model, tokenizer)
         self.model_name = model_name
         try:
+            if model_name == 'meta-llama/Llama-2-7b-chat-hf' or model_name == 'meta-llama/Llama-2-13b-chat-hf':
+                model_name = 'llama-2'
+            elif model_name == "THUDM/chatglm3-6b":
+                model_name = 'chatglm3' 
+            elif model_name == "THUDM/chatglm2-6b":
+                model_name = 'raw' 
+            elif model_name == "Qwen/Qwen-7B-Chat":
+                model_name = 'qwen-7b-chat'
+            elif model_name == "internlm/internlm-7b":
+                model_name = 'internlm-chat'
+            elif model_name == 'lmsys/vicuna-7b-v1.5':
+                model_name = 'vicuna_v1.1'
             self.conversation = get_conv_template(model_name)
         except KeyError:
             logging.error(f'Invalid model_name: {model_name}. Refer to '
@@ -114,19 +127,23 @@ class HuggingfaceModel(WhiteBoxModelBase):
         :param dict kwargs: Optional parameters for the model's generation function, such as 'temperature' and 'top_p'.
         :return: A string representing the pure response from the model, containing only the text of the response.
         """
+
         if isinstance(messages, str):
             messages = [messages]
         prompt = self.create_conversation_prompt(messages, clear_old_history=clear_old_history)
 
-        input_ids = self.tokenizer(prompt,
-                                   return_tensors='pt',
-                                   add_special_tokens=False).input_ids.to(self.model.device.index)
-        input_length = len(input_ids[0])
+        if self.model_name == "THUDM/chatglm2-6b":
+            output = self.model.chat(self.tokenizer, prompt, history=[])
+            output = output[0]
+        else:
+            input_ids = self.tokenizer(prompt,
+                                    return_tensors='pt',
+                                    add_special_tokens=False).input_ids.to(self.model.device.index)
+            input_length = len(input_ids[0])
 
-        kwargs.update({input_field_name: input_ids})
-        output_ids = self.model.generate(**kwargs, **self.generation_config)
-        output = self.tokenizer.decode(output_ids[0][input_length:], skip_special_tokens=True)
-
+            kwargs.update({input_field_name: input_ids})
+            output_ids = self.model.generate(**kwargs, **self.generation_config)
+            output = self.tokenizer.decode(output_ids[0][input_length:], skip_special_tokens=True)
         return output
 
     def batch_generate(self, conversations, **kwargs)-> List[str]:

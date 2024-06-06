@@ -1,11 +1,15 @@
 import logging
 import warnings
 from .model_base import BlackBoxModelBase
-from openai import OpenAI
+import google.generativeai as genai
 from fastchat.conversation import get_conv_template
 
-class OpenaiModel(BlackBoxModelBase):
-    def __init__(self, model_name: str, api_keys: str, generation_config=None):
+
+GOOGLE_API_KEY = 'AIzaSyDKAeHsRGNLmWlScJMaCnFBc1sstn9EY50'
+genai.configure(api_key=GOOGLE_API_KEY)
+
+class GeminiModel(BlackBoxModelBase):
+    def __init__(self, model_name: str, generation_config=None):
         """
         Initializes the OpenAI model with necessary parameters.
         :param str model_name: The name of the model to use.
@@ -13,9 +17,9 @@ class OpenaiModel(BlackBoxModelBase):
         :param str template_name: The name of the conversation template, defaults to 'chatgpt'.
         :param dict generation_config: Configuration settings for generation, defaults to an empty dictionary.
         """
-        self.client = OpenAI(api_key=api_keys)
+        self.client = genai.GenerativeModel(model_name)
         self.model_name = model_name
-        self.conversation = get_conv_template('chatgpt')
+        self.conversation = get_conv_template('gemini')
         self.generation_config = generation_config if generation_config is not None else {}
 
     def set_system_message(self, system_message: str):
@@ -40,13 +44,15 @@ class OpenaiModel(BlackBoxModelBase):
         for index, message in enumerate(messages):
             self.conversation.append_message(self.conversation.roles[index % 2], message)
         try:
-            response = self.client.chat.completions.create(
-                model=self.model_name,
-                messages=self.conversation.to_openai_api_messages(),
-                **kwargs,
-                **self.generation_config
-            )
-            return response.choices[0].message.content
+            # response = self.client.chat.completions.create(
+            #     model=self.model_name,
+            #     messages=self.conversation.to_openai_api_messages(),
+            #     **kwargs,
+            #     **self.generation_config
+            # )
+            response = self.client.generate_content(messages)
+            
+            return response.text
         except Exception:
             return 'None'
 

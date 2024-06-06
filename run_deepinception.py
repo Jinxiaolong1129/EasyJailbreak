@@ -13,8 +13,9 @@ model =  AutoModelForCausalLM.from_pretrained(llama_model_path)
 tokenizers = AutoTokenizer.from_pretrained(llama_model_path)
 llama2_7b_chat = HuggingfaceModel(model = model,tokenizer=tokenizers, model_name= model_name,generation_config=generation_config)
 
-chat_name = 'GPT-4'
-api_key = 'your key'
+chat_name = 'gpt-3.5-turbo'
+api_key = os.getenv('OPEN_API_KEY')
+
 GPT4 = OpenaiModel(model_name= chat_name,api_keys=api_key)
 
 

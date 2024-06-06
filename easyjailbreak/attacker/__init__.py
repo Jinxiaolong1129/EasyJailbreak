@@ -12,3 +12,4 @@ from .MJP_Li_2023 import MJP
 from .Multilingual_Deng_2023 import Multilingual
 from .PAIR_chao_2023 import PAIR
 from .TAP_Mehrotra_2023 import TAP
+from .Multiverse import Multiverse

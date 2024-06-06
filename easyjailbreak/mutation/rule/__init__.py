@@ -22,3 +22,4 @@ from easyjailbreak.mutation.rule.BinaryTree import BinaryTree
 from easyjailbreak.mutation.rule.Reverse import Reverse
 from easyjailbreak.mutation.rule.OddEven import OddEven
 from easyjailbreak.mutation.rule.Length import Length
+from easyjailbreak.mutation.rule.Multiverse import Multiverse_mutation

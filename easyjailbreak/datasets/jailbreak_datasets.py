@@ -49,7 +49,13 @@ class JailbreakDataset(torch.utils.data.Dataset):
             else:
                 logging.warning(f'{dataset} is not a local dataset file. Try to load from huggingface repository `Lemhf14/EasyJailbreak_Datasets`.')
                 raw_dataset = load_dataset("Lemhf14/EasyJailbreak_Datasets", dataset)
-            instance_list = [Instance(**sample) for sample in raw_dataset['train']]
+            for index, sample in enumerate(raw_dataset['train']):
+                print(index) 
+                print(sample)
+                break
+            instance_list = []
+            for index, sample in enumerate(raw_dataset['train']):
+                instance_list.append(Instance(index=index, **sample))
             self._dataset = instance_list
         else:
             logging.error('The dataset parameter for Jailbreak_Dataset should be a list of `Instance` or a string indicates the subset you want from Lemhf14/EasyJailbreak_Datasets')
@@ -169,10 +175,16 @@ class JailbreakDataset(torch.utils.data.Dataset):
         """
         import jsonlines
 
-        with jsonlines.open(path, mode='w') as writer:
+        if os.path.exists(path):
+            mode = 'a'  
+        else:
+            mode = 'w'
+
+        with jsonlines.open(path, mode=mode) as writer:
             for instance in self._dataset:
                 data = {
                     'jailbreak_prompt': getattr(instance, 'jailbreak_prompt', None),
+                    'query_index': getattr(instance, 'index', None),
                     'query': getattr(instance, 'query', None),
                     'target_responses': getattr(instance, 'target_responses', None),
                     'eval_results': getattr(instance, 'eval_results', None)

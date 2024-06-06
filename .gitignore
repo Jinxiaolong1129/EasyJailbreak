@@ -162,5 +162,5 @@ cython_debug/
 .vscode/
 /*.jsonl
 !/*/ *.jsonl
-results/*
+# results/*
 .DS_Store

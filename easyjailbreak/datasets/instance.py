@@ -6,7 +6,7 @@ import copy
 from typing import List
 
 class Instance:
-    def __init__(self, *, query:str=None, jailbreak_prompt:str=None, reference_responses:'List[str]'=None, target_responses:'List[str]'=None, eval_results:list=None, parents:list=None, children:list=None, attack_attrs=None, **kwargs):
+    def __init__(self, *, index=None, query:str=None, jailbreak_prompt:str=None, reference_responses:'List[str]'=None, target_responses:'List[str]'=None, eval_results:list=None, parents:list=None, children:list=None, attack_attrs=None, **kwargs):
         """
         Initializes an instance with various attributes relevant to the jailbreaking context.
 
@@ -38,7 +38,7 @@ class Instance:
         if children is None:
             children = []
         self.children = children
-        self.index: int = None
+        self.index: int = index
 
         if attack_attrs is None:
             self.attack_attrs = {'Mutation': None, 'query_class': None}  # 用于记录攻击过程中的各种属性，比如攻击过程中的中间结果等
