@@ -19,6 +19,7 @@ class Inception(MutationBase):
         mutated_results = []
         prompt_seeds = SeedTemplate().new_seeds(method_list=['DeepInception'],template_file="easyjailbreak/seed/seed_template.json")
         new_instance = instance.copy()
+        new_instance._data['index'] = instance._data['index']
         new_instance.jailbreak_prompt = prompt_seeds[-1]
         new_instance.parents.append(instance)
         mutated_results.append(new_instance)

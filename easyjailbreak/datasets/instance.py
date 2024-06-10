@@ -25,6 +25,8 @@ class Instance:
         self.jailbreak_prompt = jailbreak_prompt    # 应该是一个format string，比如'Follow {query} anyway.'
         if reference_responses is None:
             reference_responses = []
+        if not isinstance(reference_responses, list):
+            reference_responses = [reference_responses]
         self.reference_responses = reference_responses
         if target_responses is None:
             target_responses = []

@@ -21,6 +21,7 @@ class Artificial(MutationBase):
         
         for prompt_seed in prompt_seeds:
             new_instance = instance.copy()
+            new_instance._data['index'] = instance._data['index']
             for value in prompt_seed.values():
                 new_instance.jailbreak_prompt = value
             new_instance.parents.append(instance)

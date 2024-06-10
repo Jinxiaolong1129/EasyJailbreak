@@ -31,6 +31,8 @@ class Reverse(MutationBase):
         seed = getattr(instance, self.attr_name)
         new_seed = self.reverse(seed)
         new_instance = instance.copy()
+        new_instance._data['index'] = instance._data['index']
+
         setattr(new_instance, self.attr_name, new_seed)
         setattr(new_instance, 'decryption_function', REVERSE)
         if new_instance.jailbreak_prompt is None:

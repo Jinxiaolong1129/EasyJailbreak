@@ -34,6 +34,7 @@ class HistoricalInsight(MutationBase):
             seeds.update({attr_name: getattr(instance, attr_name)})
         mutated_text = self.historical_insight(seeds, prompt_format)
         new_instance = instance.copy()
+        new_instance._data['index'] = instance._data['index']
         setattr(new_instance, 'jailbreak_prompt', mutated_text)
         return [new_instance]
 

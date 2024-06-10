@@ -55,7 +55,8 @@ class JailbreakDataset(torch.utils.data.Dataset):
                 break
             instance_list = []
             for index, sample in enumerate(raw_dataset['train']):
-                instance_list.append(Instance(index=index, **sample))
+                # instance_list.append(Instance(index=index, **sample))
+                instance_list.append(Instance(**sample))
             self._dataset = instance_list
         else:
             logging.error('The dataset parameter for Jailbreak_Dataset should be a list of `Instance` or a string indicates the subset you want from Lemhf14/EasyJailbreak_Datasets')

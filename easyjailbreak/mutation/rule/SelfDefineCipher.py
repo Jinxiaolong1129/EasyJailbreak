@@ -255,6 +255,7 @@ class SelfDefineCipher(MutationBase):
         system_prompt += '\n' + encode_demonstrations + "\n Please reply me the following prompt: {encoded_query} by SelfDefineCipher only."
         
         new_instance = instance.copy()
+        new_instance._data['index'] = instance._data['index']
         if new_instance.jailbreak_prompt is None:
             new_instance.jailbreak_prompt = system_prompt
         seed = getattr(instance, self.attr_name)

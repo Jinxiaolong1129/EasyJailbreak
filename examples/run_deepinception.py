@@ -1,4 +1,6 @@
 import os, sys
+os.environ['HF_HOME'] = '/data3/user/jin509/hf_cache'
+
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from easyjailbreak.datasets import JailbreakDataset
 from easyjailbreak.attacker.DeepInception_Li_2023 import *
@@ -14,15 +16,18 @@ tokenizers = AutoTokenizer.from_pretrained(llama_model_path)
 llama2_7b_chat = HuggingfaceModel(model = model,tokenizer=tokenizers, model_name= model_name,generation_config=generation_config)
 
 chat_name = 'gpt-3.5-turbo'
-api_key = os.getenv('OPEN_API_KEY')
-
+api_key = os.getenv('OPENAI_API_KEY')
+print(api_key)
 GPT4 = OpenaiModel(model_name= chat_name,api_keys=api_key)
 
 
 dataset_name = 'AdvBench'
-num_attack = 1
-dataset = JailbreakDataset(dataset_name)
-dataset._dataset = dataset._dataset[:num_attack]
+
+# num_attack = 1
+# dataset = JailbreakDataset(dataset_name)
+# dataset._dataset = dataset._dataset[:num_attack]
+
+dataset = JailbreakDataset(dataset='data/TDC_data.csv', local_file_type='csv')
 
 attacker = DeepInception(attack_model=None,
                          target_model=GPT4,
@@ -33,4 +38,7 @@ attacker = DeepInception(attack_model=None,
                          layer_number=5)
 attacker.attack()
 attacker.log()
-attacker.attack_results.save_to_jsonl('AdvBench_deepinception.jsonl')
+attacker.attack_results.save_to_jsonl('TDC_deepinception.jsonl')
+
+
+# nohup python -u examples/run_deepinception.py > TDC_deepinception.log 2>&1 &

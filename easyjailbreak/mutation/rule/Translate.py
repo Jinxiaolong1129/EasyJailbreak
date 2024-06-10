@@ -35,6 +35,7 @@ class Translate(MutationBase):
         mutated_results = []
         seed = getattr(instance, self.attr_name)
         new_instance = instance.copy()
+        new_instance._data['index'] = instance._data['index']
         new_seed = self.translate(seed)
         new_instance.lang = self.lang
         setattr(new_instance, 'translated_query', new_seed)

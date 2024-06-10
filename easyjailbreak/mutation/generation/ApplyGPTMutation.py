@@ -35,6 +35,7 @@ class ApplyGPTMutation(MutationBase):
             if random.random() < self.mutation_rate:
                 mutated_prompts.append(self.gpt_mutate(seed, self.API_key))
         new_instance = instance.copy()
+        new_instance._data['index'] = instance._data['index']
         # setattr(new_instance, self.attr_name, mutated_prompts)
         new_instance.attack_attrs["candidate_prompts"] = mutated_prompts
         return [new_instance]

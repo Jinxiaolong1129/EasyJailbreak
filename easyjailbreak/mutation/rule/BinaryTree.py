@@ -97,6 +97,7 @@ class BinaryTree(MutationBase):
         seed = getattr(instance, self.attr_name)
         new_seed = self.binary_tree(seed)
         new_instance = instance.copy()
+        new_instance._data['index'] = instance._data['index']
         setattr(new_instance, self.attr_name, new_seed)
         setattr(new_instance, 'decryption_function', BINARY_TREE)
         if new_instance.jailbreak_prompt is None:

@@ -35,6 +35,7 @@ class ReplaceWordsWithSynonyms(MutationBase):
         mutated_prompt = self.HGA_replace_words_with_synonyms(self.word_dict, seed)
 
         new_instance = instance.copy()
+        new_instance._data['index'] = instance._data['index']
         setattr(new_instance, self.attr_name, mutated_prompt)
         return [new_instance]
 

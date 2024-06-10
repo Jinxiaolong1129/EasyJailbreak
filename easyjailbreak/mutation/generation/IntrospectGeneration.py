@@ -83,6 +83,7 @@ class IntrospectGeneration(MutationBase):
             processed_response_list = self.process_target_response(seeds)
         for _ in range(self.branching_factor):
             new_instance = instance.copy()
+            new_instance._data['index'] = instance._data['index']
             conv_copy = copy.deepcopy(conv)
             conv_copy.parent_id = conv.self_id
             conv_copy.self_id = random_string(32)

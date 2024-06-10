@@ -24,6 +24,7 @@ class ChangeStyle(MutationBase):
         mutated_text = self.insertCharacters(seed)
 
         new_instance = instance.copy()
+        new_instance._data['index'] = instance._data['index']
         setattr(new_instance, self.attr_name, mutated_text)
         new_instance.parents = [instance]
         new_instance.children =[]

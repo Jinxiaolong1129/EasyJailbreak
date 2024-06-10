@@ -46,6 +46,7 @@ class GPTFuzzer(AttackerBase):
         super().__init__(attack_model, target_model, eval_model, jailbreak_datasets)
         self.Questions = jailbreak_datasets
         self.Questions_length = len(self.Questions)
+        template_file = 'easyjailbreak/seed/seed_template.json'
         self.initial_prompt_seed = SeedTemplate().new_seeds(seeds_num=seeds_num, prompt_usage='attack', method_list=['Gptfuzzer'],template_file=template_file)
         self.prompt_nodes = JailbreakDataset(
             [Instance(jailbreak_prompt= prompt) for prompt in self.initial_prompt_seed]

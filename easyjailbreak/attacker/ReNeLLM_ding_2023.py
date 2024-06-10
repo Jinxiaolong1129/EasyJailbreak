@@ -92,6 +92,7 @@ class ReNeLLM(AttackerBase):
         scenario = self.selector.select()[0].jailbreak_prompt
 
         new_instance = instance.copy()
+        new_instance._data['index'] = instance._data['index']
         new_instance.parents.append(instance)
         instance.children.append(new_instance)
 

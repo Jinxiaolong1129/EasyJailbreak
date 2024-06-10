@@ -46,6 +46,7 @@ class OddEven(MutationBase):
         seed = getattr(instance, self.attr_name)
         new_seed = self.odd_even(seed)
         new_instance = instance.copy()
+        new_instance._data['index'] = instance._data['index']
         setattr(new_instance, self.attr_name, new_seed)
         setattr(new_instance, 'decryption_function', ODD_EVEN)
         if new_instance.jailbreak_prompt is None:

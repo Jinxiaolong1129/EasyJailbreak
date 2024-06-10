@@ -553,6 +553,7 @@ class AutoDAN(AttackerBase):
                 best_prompt = adv_prefix
 
         new_instance = instance.copy()
+        new_instance._data['index'] = instance._data['index']
         new_instance.parents.append(instance)
         instance.children.append(new_instance)
         new_instance.jailbreak_prompt = best_prompt + '{query}'

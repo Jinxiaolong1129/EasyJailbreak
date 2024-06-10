@@ -39,7 +39,6 @@ def main_llama(target_model_name, start_num, end_num):
     
     log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.log')
     print(f"log_path: {log_path}")
-    
     save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.jsonl')
     print(f"Running jailbreak attack on target model: {save_dir}")
     
@@ -127,23 +126,29 @@ def main_chatglm3_6b(target_model_name, start_num, end_num):
     
     dataset = JailbreakDataset(dataset_name)
     
-    # file_path = 'results/advbench_target.chatglm3-6b_eval.gpt-3.5-turbo.jsonl'
-    # with open(file_path, 'r') as file:
-    #     lines = file.readlines()
+    file_path = 'results/advbench_target.chatglm3-6b_eval.gpt-3.5-turbo_start0_end520.jsonl'
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
 
-    # data = []
-    # for index, line in enumerate(lines):
-    #     record = json.loads(line)
-    #     data.append(record)
-    # filtered_indices = [record["query_index"] for record in data if record["eval_results"] == [False]]
+    data = []
+    for index, line in enumerate(lines):
+        record = json.loads(line)
+        data.append(record)
+    filtered_indices = [record["query_index"] for record in data if record["eval_results"] == [False]]
 
-    # dataset._dataset = [dataset._dataset[i] for i in filtered_indices]
+    dataset._dataset = [dataset._dataset[i] for i in filtered_indices]
     
-    dataset._dataset = dataset._dataset[start_num:end_num]
-    log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_start{start_num}_end{end_num}.log')
-    print(f"log_path: {log_path}")
-    save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_start{start_num}_end{end_num}.jsonl')
+    log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.log')
+    print(f"log_path: {log_path}")    
+    save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.jsonl')
     print(f"Running jailbreak attack on target model: {save_dir}")
+    
+    
+    # dataset._dataset = dataset._dataset[start_num:end_num]
+    # log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_start{start_num}_end{end_num}.log')
+    # print(f"log_path: {log_path}")
+    # save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_start{start_num}_end{end_num}.jsonl')
+    # print(f"Running jailbreak attack on target model: {save_dir}")
     
     
     model_paths = {
@@ -229,30 +234,29 @@ def main_chatglm2_6b(target_model_name, start_num, end_num):
     
     dataset = JailbreakDataset(dataset_name)
     
-    # file_path = 'results/advbench_target.chatglm3-6b_eval.gpt-3.5-turbo.jsonl'
-    # with open(file_path, 'r') as file:
-    #     lines = file.readlines()
+    file_path = 'results/advbench_target.chatglm2-6b_eval.gpt-3.5-turbo_retain135.jsonl'
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
 
-    # data = []
-    # for index, line in enumerate(lines):
-    #     record = json.loads(line)
-    #     data.append(record)
-    # filtered_indices = [record["query_index"] for record in data if record["eval_results"] == [False]]
+    data = []
+    for index, line in enumerate(lines):
+        record = json.loads(line)
+        data.append(record)
+    filtered_indices = [record["query_index"] for record in data if record["eval_results"] == [False]]
 
-    # dataset._dataset = [dataset._dataset[i] for i in filtered_indices]    
-    # log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.log')
-    # print(f"log_path: {log_path}")
-    
-    # save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.jsonl')
-    # print(f"Running jailbreak attack on target model: {save_dir}")
-    
-    
-    
-    dataset._dataset = dataset._dataset[start_num:end_num]
-    log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_start{start_num}_end{end_num}.log')
-    print(f"log_path: {log_path}")
-    save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_start{start_num}_end{end_num}.jsonl')
+    dataset._dataset = [dataset._dataset[i] for i in filtered_indices]    
+    log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.log')
+    print(f"log_path: {log_path}")    
+    save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.jsonl')
     print(f"Running jailbreak attack on target model: {save_dir}")
+    
+    
+    
+    # dataset._dataset = dataset._dataset[start_num:end_num]
+    # log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_start{start_num}_end{end_num}.log')
+    # print(f"log_path: {log_path}")
+    # save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_start{start_num}_end{end_num}.jsonl')
+    # print(f"Running jailbreak attack on target model: {save_dir}")
     
     model_paths = {
         'llama-2-7b': 'meta-llama/Llama-2-7b-chat-hf',
@@ -445,30 +449,29 @@ def main_gpt_4(target_model_name, start_num, end_num):
     
     dataset = JailbreakDataset(dataset_name)
     
-    # file_path = 'results/advbench_target.gpt-4_eval.gpt-3.5-turbo-retain130.jsonl'
-    # with open(file_path, 'r') as file:
-    #     lines = file.readlines()
+    file_path = 'results/advbench_target.gpt-4_eval.gpt-3.5-turbo-retain130.jsonl'
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
 
-    # data = []
-    # for index, line in enumerate(lines):
-    #     record = json.loads(line)
-    #     data.append(record)
-    # filtered_indices = [record["query_index"] for record in data if record["eval_results"] == [False]]
+    data = []
+    for index, line in enumerate(lines):
+        record = json.loads(line)
+        data.append(record)
+    filtered_indices = [record["query_index"] for record in data if record["eval_results"] == [False]]
 
-    # dataset._dataset = [dataset._dataset[i] for i in filtered_indices]
-    # log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.log')
-    # print(f"log_path: {log_path}")
-    # save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.jsonl')
-    # print(f"Running jailbreak attack on target model: {save_dir}")
-    
-    
-    dataset._dataset = dataset._dataset[start_num:end_num]
-    log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_start{start_num}_end{end_num}.log')
+    dataset._dataset = [dataset._dataset[i] for i in filtered_indices]
+    log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.log')
     print(f"log_path: {log_path}")
-    save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_start{start_num}_end{end_num}.jsonl')
+    save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.jsonl')
     print(f"Running jailbreak attack on target model: {save_dir}")
     
     
+    # dataset._dataset = dataset._dataset[start_num:end_num]
+    # log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_start{start_num}_end{end_num}.log')
+    # print(f"log_path: {log_path}")
+    # save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_start{start_num}_end{end_num}.jsonl')
+    # print(f"Running jailbreak attack on target model: {save_dir}")
+        
     model_paths = {
         'llama-2-7b': 'meta-llama/Llama-2-7b-chat-hf',
         'llama-2-13b': 'meta-llama/Llama-2-13b-chat-hf',
@@ -769,7 +772,7 @@ def main_qwen_7b(target_model_name, start_num, end_num):
     
     dataset = JailbreakDataset(dataset_name)
     
-    file_path = '/home/jin509/EasyJailbreak/results/advbench_target.qwen-7b_eval.gpt-3.5-turbo-back.jsonl'
+    file_path = '/home/jin509/EasyJailbreak/results/advbench_target.qwen-7b_eval.gpt-3.5-turbo.jsonl'
     with open(file_path, 'r') as file:
         lines = file.readlines()
 
@@ -872,7 +875,7 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
-    api_key = os.getenv('OPEN_API_KEY')
+    api_key = os.getenv('OPENAI_API_KEY')
     
     if args.target_model == 'llama-2-7b':
         main_llama(args.target_model, args.start_num, args.end_num)
