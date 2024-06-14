@@ -381,7 +381,8 @@ class AutoDAN(AttackerBase):
         """
         logging.info("Jailbreak started!")
         try:
-            for instance in tqdm(self.jailbreak_datasets, desc="processing instance"):
+            for i, instance in enumerate(self.jailbreak_datasets):
+                logging.info(f"Processing | {i+1} / {len(self.jailbreak_datasets)}")
                 new_instance = self.single_attack(instance)[0]
                 self.attack_results.add(new_instance)
             self.update(self.attack_results)

@@ -37,19 +37,30 @@ class OpenaiModel(BlackBoxModelBase):
             self.conversation.messages = []
         if isinstance(messages, str):
             messages = [messages]
-        for index, message in enumerate(messages):
-            self.conversation.append_message(self.conversation.roles[index % 2], message)
-        try:
-            response = self.client.chat.completions.create(
-                model=self.model_name,
-                messages=self.conversation.to_openai_api_messages(),
-                **kwargs,
-                **self.generation_config
-            )
-            return response.choices[0].message.content
-        except Exception:
-            return 'None'
-
+        if 'role' not in messages[0]:
+            for index, message in enumerate(messages):
+                self.conversation.append_message(self.conversation.roles[index % 2], message)
+            try:
+                response = self.client.chat.completions.create(
+                    model=self.model_name,
+                    messages=self.conversation.to_openai_api_messages(),
+                    **kwargs,
+                    **self.generation_config
+                )
+                return response.choices[0].message.content
+            except Exception:
+                return 'None'
+        else:
+            try:
+                response = self.client.chat.completions.create(
+                    model=self.model_name,
+                    messages=messages,
+                    **kwargs,
+                    **self.generation_config
+                )
+                return response.choices[0].message.content
+            except Exception:
+                return 'None'
     def batch_generate(self, conversations, **kwargs):
         """
         Generates responses for multiple conversations in a batch.

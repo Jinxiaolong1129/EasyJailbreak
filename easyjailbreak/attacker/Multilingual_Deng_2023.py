@@ -150,6 +150,9 @@ class Multilingual(AttackerBase):
         """
         googleapis_url = 'https://translate.googleapis.com/translate_a/single'
         url = '%s?client=gtx&sl=%s&tl=%s&dt=t&q=%s' % (googleapis_url,src_lang,'en',text)
-        data = requests.get(url).json()
-        res = ''.join([s[0] for s in data[0]])
-        return res
+        try:
+            data = requests.get(url).json()
+            res = ''.join([s[0] for s in data[0]])
+            return res
+        except requests.exceptions.JSONDecodeError:
+            return "error"

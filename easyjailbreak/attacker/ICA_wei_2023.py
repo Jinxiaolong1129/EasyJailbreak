@@ -13,7 +13,7 @@ from easyjailbreak.attacker import AttackerBase
 from easyjailbreak.datasets import JailbreakDataset
 from easyjailbreak.datasets.instance import Instance
 from easyjailbreak.seed import SeedTemplate
-from easyjailbreak.metrics.Evaluator import EvaluatorPatternJudge
+from easyjailbreak.metrics.Evaluator import EvaluatorPatternJudge, EvaluatorGenerativeJudge
 
 
 class ICA(AttackerBase):
@@ -47,7 +47,8 @@ class ICA(AttackerBase):
         super().__init__(attack_model, target_model, eval_model, jailbreak_datasets)
 
         self.attack_results = JailbreakDataset([])
-        self.evaluator = EvaluatorPatternJudge(pattern_dict=pattern_dict)
+        # self.evaluator = EvaluatorPatternJudge(pattern_dict=pattern_dict)
+        self.evaluator = EvaluatorGenerativeJudge(eval_model)
 
         self.current_query: int = 0
         self.current_jailbreak: int = 0
@@ -116,8 +117,11 @@ class ICA(AttackerBase):
         Main loop for the attack process, iterate through jailbreak_datasets.
         """
         logging.info("Jailbreak started!")
+        print('=================')
+        print("ICA!!!")
         try:
-            for Instance in tqdm.tqdm(self.jailbreak_datasets, desc="processing instance"):
+            for index, Instance in enumerate(tqdm.tqdm(self.jailbreak_datasets, desc="processing instance")):
+                logging.info(f"Processing | {index+1} / {len(self.jailbreak_datasets)}")
                 mutated_instance = self.single_attack(Instance)[0]
                 self.attack_results.add(mutated_instance)
             self.evaluator(self.attack_results)

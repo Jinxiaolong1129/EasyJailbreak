@@ -19,7 +19,7 @@ import os
 __all__ = ['Multiverse']
 
 class Multiverse(AttackerBase):
-    def __init__(self, attack_model, target_model, target_model_name, eval_model, jailbreak_datasets: JailbreakDataset, scene=None, character_number=None, layer_number=None, save_path=None, log_path=None):
+    def __init__(self, attack_model, target_model, target_model_name, eval_model, jailbreak_datasets: JailbreakDataset, layer_number=None, save_path=None, log_path=None, ablation_layer=False):
         r"""
         Initialize the DeepInception attack instance.
         :param attack_model: In this case, the attack_model should be set as None.
@@ -35,14 +35,20 @@ class Multiverse(AttackerBase):
         self.current_query: int = 0
         self.current_jailbreak: int = 0
         self.current_reject: int = 0
-        self.scene = scene
-        self.character_number = character_number
-        self.layer_number = layer_number
-        self.evaluator = EvaluatorGenerativeJudge(eval_model)
-        self.mutation = Multiverse_mutation(attr_name='query',target_model_name= target_model_name)
+
+        if not ablation_layer:
+            self.layer_number = layer_number
+            self.evaluator = EvaluatorGenerativeJudge(eval_model)
+            self.mutation = Multiverse_mutation(attr_name='query',target_model_name= target_model_name)
+        
+        else:
+            self.layer_number = layer_number
+            self.evaluator = EvaluatorGenerativeJudge(eval_model)
+            self.mutation = Multiverse_mutation(attr_name='query',target_model_name= target_model_name, 
+                                                ablation_layer=ablation_layer, layer_number=layer_number)
+        
         self.save_path = save_path
         self.log_path = log_path
-        # Configuring the logger after mutation setup
         self.configure_logger()
 
 
@@ -67,12 +73,6 @@ class Multiverse(AttackerBase):
         new_instance = self.mutation(instance_ds)[-1]
         system_prompt = new_instance.jailbreak_prompt.format(query = new_instance.query)
         
-        if self.scene is not None:
-            system_prompt = system_prompt.replace('science fiction', self.scene)
-        if self.character_number is not None:
-            system_prompt = system_prompt.replace('4', str(self.character_number))
-        if self.layer_number is not None:
-            system_prompt = system_prompt.replace('5', str(self.layer_number))
         new_instance.jailbreak_prompt = system_prompt
         answer = self.target_model.generate(system_prompt.format(query = new_instance.query))
         new_instance.target_responses.append(answer)
@@ -90,11 +90,7 @@ class Multiverse(AttackerBase):
             for i, Instance in enumerate(self.jailbreak_datasets):
                 logging.info(f"Processing | {i+1} / {len(self.jailbreak_datasets)}")
                 results = self.single_attack(Instance)    
-                # eval_dataset = JailbreakDataset([results[0]])
-                # self.evaluator(eval_dataset)
-                # if results[0].eval_results[0] == True:
-                #     print("Jailbreak successful!")
-                #     # break
+
                 for new_instance in results:
                     self.attack_results.add(new_instance)
                     

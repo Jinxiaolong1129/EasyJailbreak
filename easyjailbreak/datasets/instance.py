@@ -22,6 +22,7 @@ class Instance:
         """
         self._data = {}
         self.query = query
+        self.total_query_num = 0
         self.jailbreak_prompt = jailbreak_prompt    # 应该是一个format string，比如'Follow {query} anyway.'
         if reference_responses is None:
             reference_responses = []

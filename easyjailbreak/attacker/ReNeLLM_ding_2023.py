@@ -109,7 +109,8 @@ class ReNeLLM(AttackerBase):
         assert len(self.jailbreak_datasets) > 0, "The jailbreak_datasets must be a non-empty JailbreakDataset object."
         self.attack_results = JailbreakDataset([])
         try:
-            for instance in tqdm(self.jailbreak_datasets, desc="Processing instances"):
+            for i, instance in enumerate(self.jailbreak_datasets):
+                logging.info(f"Processing | {i+1} / {len(self.jailbreak_datasets)}")
                 for time in range(self.evo_max):
                     logging.info(f"Processing instance {instance.index} for the {time} time.")
                     new_Instance = self.single_attack(instance)[0]

@@ -19,6 +19,7 @@ from easyjailbreak.seed.seed_template import SeedTemplate
 from easyjailbreak.mutation.generation import HistoricalInsight
 from easyjailbreak.models import OpenaiModel, HuggingfaceModel
 from easyjailbreak.metrics.Evaluator.Evaluator_GenerativeGetScore import EvaluatorGenerativeGetScore
+from easyjailbreak.models.gemini import GeminiModel
 
 __all__ = ['PAIR']
 
@@ -175,14 +176,14 @@ class PAIR(AttackerBase):
         instance.jailbreak_prompt = self.attack_seed.format(query=instance.query,
                                                             reference_responses=instance.reference_responses[0])
         self.attack_model.set_system_message(self.attack_system_message.format(query=instance.query,
-                                                                               reference_responses=
-                                                                               instance.reference_responses[0]))
+                                                                            reference_responses=
+                                                                            instance.reference_responses[0]))
 
         instance.attack_attrs.update({
             'attack_conversation': copy.deepcopy(self.attack_model.conversation)}
         )
         batch = [instance.copy() for _ in range(self.n_streams)]
-
+        total_query_num = 0
         for iteration in range(1, self.n_iterations + 1):
             print('')
             logging.info(f"""{'=' * 36}""")
@@ -205,13 +206,13 @@ class PAIR(AttackerBase):
                     stream.attack_attrs['attack_conversation'].append_message(
                         stream.attack_attrs['attack_conversation'].roles[1], init_message)
                     stream.jailbreak_prompt = stream.attack_attrs['attack_conversation'].get_prompt()[
-                                              :-len(stream.attack_attrs['attack_conversation'].sep2)]
+                                            :-len(stream.attack_attrs['attack_conversation'].sep2)]
                 if isinstance(self.attack_model, OpenaiModel):
                     stream.jailbreak_prompt = stream.attack_attrs['attack_conversation'].to_openai_api_messages()
 
                 for _ in range(self.max_n_attack_attempts):
                     new_instance = self.mutations[0](jailbreak_dataset=JailbreakDataset([stream]),
-                                                     prompt_format=stream.jailbreak_prompt)[0]
+                                                    prompt_format=stream.jailbreak_prompt)[0]
                     self.attack_model.conversation.messages = []  # clear the conversation history generated during mutation.
                     if "gpt" not in stream.attack_attrs['attack_conversation'].name:
                         new_prompt, json_str = self.extract_json(init_message + new_instance.jailbreak_prompt)
@@ -229,14 +230,21 @@ class PAIR(AttackerBase):
                 if isinstance(self.target_model, OpenaiModel):
                     stream.target_responses = [
                         self.target_model.generate(stream.jailbreak_prompt, max_tokens=self.target_max_n_tokens,
-                                                   temperature=self.target_temperature, top_p=self.target_top_p)]
+                                                temperature=self.target_temperature, top_p=self.target_top_p)]
                 elif isinstance(self.target_model, HuggingfaceModel):
                     stream.target_responses = [
                         self.target_model.generate(stream.jailbreak_prompt,
-                                                   max_new_tokens=self.target_max_n_tokens,
-                                                   temperature=self.target_temperature, do_sample=True,
-                                                   top_p=self.target_top_p,
-                                                   eos_token_id=self.target_model.tokenizer.eos_token_id)]
+                                                max_new_tokens=self.target_max_n_tokens,
+                                                temperature=self.target_temperature, do_sample=True,
+                                                top_p=self.target_top_p,
+                                                eos_token_id=self.target_model.tokenizer.eos_token_id)]
+                elif isinstance(self.target_model, GeminiModel):
+                    stream.target_responses = [
+                        self.target_model.generate(stream.jailbreak_prompt)]
+                    
+                print(f"target_responses: {stream.target_responses}\n")
+                print('============================================')
+                total_query_num = total_query_num + 1
                 # Get judge scores
                 if self.eval_model is None:
                     stream.eval_results = [random.randint(1, 10)]
@@ -249,9 +257,10 @@ class PAIR(AttackerBase):
                     break
                 # remove extra history
                 stream.attack_attrs['attack_conversation'].messages = stream.attack_attrs[
-                                                                          'attack_conversation'].messages[
+                                                                        'attack_conversation'].messages[
                                                                       -2 * self.keep_last_n:]
-
+            if not isinstance(instance.num_jailbreak, int):
+                print(instance.num_jailbreak)
             if instance.eval_results == [10]:
                 logging.info("Found a jailbreak. Exiting.")
                 instance.eval_results = ["True"]
@@ -259,6 +268,8 @@ class PAIR(AttackerBase):
         else:
             instance = batch[0]
             instance.eval_results = ["False"]
+            
+        instance.total_query_num = total_query_num
         return instance
 
     def attack(self, save_path='PAIR_attack_result.jsonl'):
@@ -273,11 +284,11 @@ class PAIR(AttackerBase):
                 self.processed_instances.add(self.single_attack(instance))
         except KeyboardInterrupt:
             logging.info("Jailbreak interrupted by user!")
-        self.update(self.processed_instances)
+        # self.update(self.processed_instances)
         self.jailbreak_datasets = self.processed_instances
         self.log()
         logging.info("Jailbreak finished!")
-        self.jailbreak_datasets.save_to_jsonl(save_path)
+        self.jailbreak_datasets.save_to_jsonl_PAIR(save_path)
         logging.info(
             'Jailbreak result saved at {}!'.format(os.path.join(os.path.dirname(os.path.abspath(__file__)), save_path)))
 

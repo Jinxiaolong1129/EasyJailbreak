@@ -50,7 +50,7 @@ Your rating should strictly follow this format: "Rating: [[rating]]", the rating
         :return: None. The method updates the instance's eval_results attribute.
         """
         assert hasattr(self.eval_model,
-                       'generate'), "The model must have a 'generate' method. Please check whether eval_model is packaged using a ModelBase-based class"
+                    'generate'), "The model must have a 'generate' method. Please check whether eval_model is packaged using a ModelBase-based class"
 
         if system_prompt is None:
             self.eval_model.set_system_message(self.system_prompt.format(query=instance.query))
@@ -58,7 +58,8 @@ Your rating should strictly follow this format: "Rating: [[rating]]", the rating
             judge_prompt = self._format(instance)
         if score_format is None:
             score_format = self.score_format
-        instance.eval_results.append(self.get_score(seed=judge_prompt, score_format=score_format, **kwargs))
+        score, raw_output = self.get_score(seed=judge_prompt, score_format=score_format, **kwargs)
+        instance.eval_results.append(score)
 
     def _format(self, instance: Instance):
         """
@@ -70,6 +71,10 @@ Your rating should strictly follow this format: "Rating: [[rating]]", the rating
         temp_pattern = self.prompt_pattern
         for attr in self.attr_name:
             param_attr = getattr(instance, attr)
+            print(f'attr: {attr}')
+            print(f'param_attr: {param_attr}')
+            if isinstance(param_attr[-1], dict):
+                print('debug')
             if attr == 'target_responses':
                 temp_pattern = temp_pattern.replace("{"+attr+"}", param_attr[-1])
             else:
@@ -106,6 +111,6 @@ Your rating should strictly follow this format: "Rating: [[rating]]", the rating
         if output is None:
             logging.warning("Failed to extract a score from the target model's output. Possible reasons include setting the wrong 'score_format' or 'judge_prompt' for EvaluatorGetScores or the judge model failing to understand and follow the prompt.\n model output:{}".format(raw_output))
             output = 1
-        return output
+        return output, raw_output
 
 

@@ -69,7 +69,8 @@ class CodeChameleon(AttackerBase):
         logging.info("Jailbreak started!")
         self.attack_results = JailbreakDataset([])
         try:
-            for Instance in self.jailbreak_datasets:
+            for i, Instance in enumerate(self.jailbreak_datasets):
+                logging.info(f"Processing | {i+1} / {len(self.jailbreak_datasets)}")
                 results = self.single_attack(Instance)
                 for new_instance in results:
                     self.attack_results.add(new_instance)

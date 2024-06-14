@@ -25,22 +25,22 @@ def main_llama(target_model_name, start_num, end_num):
     
     dataset = JailbreakDataset(dataset_name)
     
-    file_path = 'results/advbench_target.llama-2-7b_eval.gpt-3.5-turbo-retain174.jsonl'
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
+    # file_path = 'results/advbench_target.llama-2-7b_eval.gpt-3.5-turbo-retain174.jsonl'
+    # with open(file_path, 'r') as file:
+    #     lines = file.readlines()
 
-    data = []
-    for index, line in enumerate(lines):
-        record = json.loads(line)
-        data.append(record)
-    filtered_indices = [record["query_index"] for record in data if record["eval_results"] == [False]]
+    # data = []
+    # for index, line in enumerate(lines):
+    #     record = json.loads(line)
+    #     data.append(record)
+    # filtered_indices = [record["query_index"] for record in data if record["eval_results"] == [False]]
 
-    dataset._dataset = [dataset._dataset[i] for i in filtered_indices]
+    # dataset._dataset = [dataset._dataset[i] for i in filtered_indices]
     
-    log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.log')
-    print(f"log_path: {log_path}")
-    save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.jsonl')
-    print(f"Running jailbreak attack on target model: {save_dir}")
+    # log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.log')
+    # print(f"log_path: {log_path}")
+    # save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.jsonl')
+    # print(f"Running jailbreak attack on target model: {save_dir}")
     
     
     model_paths = {
@@ -75,7 +75,7 @@ def main_llama(target_model_name, start_num, end_num):
         model_path = model_paths[target_model_name]
         model = AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True, device_map="auto")
         tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
-        target_model = HuggingfaceModel(model=model, tokenizer=tokenizer, model_name=model_path, generation_config=generation_config)
+        target_model = HuggingfaceModel(model=model, tokenizer=tokenizer, model_name=model_path)
     
     elif target_model_name == 'intern-7b':
         model_path = model_paths[target_model_name]
@@ -184,7 +184,7 @@ def main_chatglm3_6b(target_model_name, start_num, end_num):
         model_path = model_paths[target_model_name]
         model = AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True, device_map="auto")
         tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
-        target_model = HuggingfaceModel(model=model, tokenizer=tokenizer, model_name=model_path, generation_config=generation_config)
+        target_model = HuggingfaceModel(model=model, tokenizer=tokenizer, model_name=model_path)
     
     elif target_model_name == 'intern-7b':
         model_path = model_paths[target_model_name]
@@ -291,7 +291,7 @@ def main_chatglm2_6b(target_model_name, start_num, end_num):
         model_path = model_paths[target_model_name]
         model = AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True, device_map="auto")
         tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
-        target_model = HuggingfaceModel(model=model, tokenizer=tokenizer, model_name=model_path, generation_config=generation_config)
+        target_model = HuggingfaceModel(model=model, tokenizer=tokenizer, model_name=model_path)
     
     elif target_model_name == 'intern-7b':
         model_path = model_paths[target_model_name]
@@ -399,7 +399,7 @@ def main_vicuna_7b(target_model_name, start_num, end_num):
         model_path = model_paths[target_model_name]
         model = AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True, device_map="auto")
         tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
-        target_model = HuggingfaceModel(model=model, tokenizer=tokenizer, model_name=model_path, generation_config=generation_config)
+        target_model = HuggingfaceModel(model=model, tokenizer=tokenizer, model_name=model_path)
     
     elif target_model_name == 'intern-7b':
         model_path = model_paths[target_model_name]
@@ -505,7 +505,7 @@ def main_gpt_4(target_model_name, start_num, end_num):
         model_path = model_paths[target_model_name]
         model = AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True, device_map="auto")
         tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
-        target_model = HuggingfaceModel(model=model, tokenizer=tokenizer, model_name=model_path, generation_config=generation_config)
+        target_model = HuggingfaceModel(model=model, tokenizer=tokenizer, model_name=model_path)
     
     elif target_model_name == 'intern-7b':
         model_path = model_paths[target_model_name]
@@ -608,7 +608,7 @@ def main_gpt_3_turbo(target_model_name, start_num, end_num):
         model_path = model_paths[target_model_name]
         model = AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True, device_map="auto")
         tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
-        target_model = HuggingfaceModel(model=model, tokenizer=tokenizer, model_name=model_path, generation_config=generation_config)
+        target_model = HuggingfaceModel(model=model, tokenizer=tokenizer, model_name=model_path)
     
     elif target_model_name == 'intern-7b':
         model_path = model_paths[target_model_name]
@@ -660,27 +660,27 @@ def main_gemini(target_model_name, start_num, end_num):
     
     dataset._dataset = dataset._dataset[start_num:end_num]
     
-    # log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_{start_num}_{end_num}.log')
-    # print(f"log_path: {log_path}")
-    # save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_{start_num}_{end_num}.jsonl')
-    # print(f"Running jailbreak attack on target model: {save_dir}")
-    
-    
-    file_path = 'results/advbench_target.gemini-1.5-flash_eval.gpt-3.5-turbo_0_520.jsonl'
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
-    data = []
-    for index, line in enumerate(lines):
-        record = json.loads(line)
-        data.append(record)
-    filtered_indices = [record["query_index"] for record in data if record["eval_results"] == [False]]
-    dataset._dataset = [dataset._dataset[i] for i in filtered_indices]
-    
-    
-    log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.log')
+    log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_{start_num}_{end_num}.log')
     print(f"log_path: {log_path}")
-    save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.jsonl')
+    save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_{start_num}_{end_num}.jsonl')
     print(f"Running jailbreak attack on target model: {save_dir}")
+    
+    
+    # file_path = 'results/advbench_target.gemini-1.5-flash_eval.gpt-3.5-turbo_0_520.jsonl'
+    # with open(file_path, 'r') as file:
+    #     lines = file.readlines()
+    # data = []
+    # for index, line in enumerate(lines):
+    #     record = json.loads(line)
+    #     data.append(record)
+    # filtered_indices = [record["query_index"] for record in data if record["eval_results"] == [False]]
+    # dataset._dataset = [dataset._dataset[i] for i in filtered_indices]
+    
+    
+    # log_path = os.path.join('results', f'advbench_jailbreak_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.log')
+    # print(f"log_path: {log_path}")
+    # save_dir = os.path.join('results', f'advbench_target.{target_model_name}_eval.gpt-3.5-turbo_retain{len(filtered_indices)}.jsonl')
+    # print(f"Running jailbreak attack on target model: {save_dir}")
     
     
     
@@ -719,7 +719,7 @@ def main_gemini(target_model_name, start_num, end_num):
         model_path = model_paths[target_model_name]
         model = AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True, device_map="auto")
         tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
-        target_model = HuggingfaceModel(model=model, tokenizer=tokenizer, model_name=model_path, generation_config=generation_config)
+        target_model = HuggingfaceModel(model=model, tokenizer=tokenizer, model_name=model_path)
     
     elif target_model_name == 'intern-7b':
         model_path = model_paths[target_model_name]
@@ -822,7 +822,7 @@ def main_qwen_7b(target_model_name, start_num, end_num):
         model_path = model_paths[target_model_name]
         model = AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True, device_map="auto")
         tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
-        target_model = HuggingfaceModel(model=model, tokenizer=tokenizer, model_name=model_path, generation_config=generation_config)
+        target_model = HuggingfaceModel(model=model, tokenizer=tokenizer, model_name=model_path)
     
     elif target_model_name == 'intern-7b':
         model_path = model_paths[target_model_name]

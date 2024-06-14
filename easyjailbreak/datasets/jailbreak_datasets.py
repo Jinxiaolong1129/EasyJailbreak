@@ -192,6 +192,31 @@ class JailbreakDataset(torch.utils.data.Dataset):
                 }
                 writer.write(data)
 
+    def save_to_jsonl_PAIR(self, path='data.jsonl'):
+        """
+        Saves the dataset to a JSONL file using jsonlines library.
+
+        :param str path: The path of the file where the dataset will be saved. Defaults to 'data.jsonl'.
+        """
+        import jsonlines
+
+        if os.path.exists(path):
+            mode = 'a'  
+        else:
+            mode = 'w'
+
+        with jsonlines.open(path, mode=mode) as writer:
+            for instance in self._dataset:
+                data = {
+                    'jailbreak_prompt': getattr(instance, 'jailbreak_prompt', None),
+                    'query_index': getattr(instance, 'index', None),
+                    'query': getattr(instance, 'query', None),
+                    'target_responses': getattr(instance, 'target_responses', None),
+                    'eval_results': getattr(instance, 'eval_results', None),
+                    'total_query_num': getattr(instance, 'total_query_num', None)
+                }
+                writer.write(data)
+
     def save_to_csv(self, path = 'data.csv'):
         r"""
         Saves the dataset to a CSV file.

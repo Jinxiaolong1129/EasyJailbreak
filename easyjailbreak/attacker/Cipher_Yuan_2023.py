@@ -76,7 +76,8 @@ class Cipher(AttackerBase):
         assert len(self.jailbreak_datasets) > 0, "The jailbreak_datasets must be a non-empty JailbreakDataset object."
         self.attack_results = JailbreakDataset([])
         try:
-            for instance in self.jailbreak_datasets:
+            for i, instance in enumerate(self.jailbreak_datasets):
+                logging.info(f"Processing | {i+1} / {len(self.jailbreak_datasets)}")
                 self.info_dict['query'].append(instance.query)
                 results = self.single_attack(instance)
                 for new_instance in results:

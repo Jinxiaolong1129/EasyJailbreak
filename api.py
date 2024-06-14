@@ -1,8 +1,8 @@
 import os, sys
 
-gpu_list = [2,3]
-gpu_str = ','.join([str(gpu) for gpu in gpu_list])
-os.environ["CUDA_VISIBLE_DEVICES"] = gpu_str
+# gpu_list = [2,3]
+# gpu_str = ','.join([str(gpu) for gpu in gpu_list])
+# os.environ["CUDA_VISIBLE_DEVICES"] = gpu_str
 
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from easyjailbreak.datasets import JailbreakDataset
